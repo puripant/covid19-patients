@@ -1,5 +1,5 @@
 body {
-  width: 800px;
+  width: 100%;
   margin: 50 auto;
   background-color: white;
   color: #1E1952;
@@ -14,11 +14,11 @@ body {
   margin: 20px 0;
 }
 #title h1 {
-  font-size: 4em;
+  font-size: 3em;
   margin: 0;
 }
 #title h2 {
-  font-size: 2.7em;
+  font-size: 2em;
   margin: 0;
 }
 
@@ -55,10 +55,9 @@ body {
                                   supported by Chrome and Opera */
 }
 
-.legendCells rect.swatch {
+/* .legendCells rect.swatch {
   stroke: #1E1952;
 }
 .dark-background .legendCells text.label {
   fill: #1E1952;
-  /* fill: white; */
-}
+} */

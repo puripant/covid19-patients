@@ -1,13 +1,14 @@
-const width = 500;
+const width = (window.innerWidth > 500) ? 500 : 300;
 const height = 500;
-const margin = { left: 50, right: 50, top: 50, bottom: 20 };
+const margin = { left: 25, right: 25, top: 50, bottom: 10 };
 const cell_size = 10;
+const width_factor = (window.innerWidth > 500) ? 1 : 1.5;
 
 const date_scale = d3.scaleTime()
-  .domain([new Date(2020, 0, 1), Date.now()])
+  .domain([new Date(2020, 0, 13), Date.now()])
   .range([0, width]);
 const x_scale = d3.scaleLinear()
-  .domain([0, width/cell_size])
+  .domain([0, width/cell_size*width_factor])
   .range([3, width]);
 const y_scale = d3.scaleLinear()
   .domain([0, height/cell_size])
@@ -15,7 +16,7 @@ const y_scale = d3.scaleLinear()
 const freq_scale = d3.scaleLinear()
   .domain([0, height/cell_size + 10])
   .range([0, height]);
-const color_scale = d3.scaleOrdinal(["#1E1952", "#FCC20D"]) //(d3.schemeTableau10)
+const color_scale = d3.scaleOrdinal(["#1E1952", "#FCC20D", "#999999"]) //(d3.schemeTableau10)
   // .domain([9, 10]);
 
 const svg = d3.select('#chart')
@@ -37,9 +38,8 @@ let draw = () => {
       exit => exit.remove()
     )
       .attr('class', 'patient')
-      .text(d => d.number)
       .attr('text-anchor', 'end')
-      .attr('fill', d => color_scale(d.infected_type))
+      .attr('fill', d => color_scale(d.status))
       .attr('y', (d, i) => (i+1) * cell_size - 3)
     .transition(t)
       .delay(d => d.years/5)
@@ -51,28 +51,28 @@ let draw = () => {
     .join(
       enter => enter.append("rect")
         .call(enter => enter.append("svg:title")
-          .text(d => `${d.number}`)
+          .text(d => `เคสที่ ${d.number} คน${d.nationality} เพศ${d.gender} อายุ ${d.age} ปี อาชีพ${d.occupation} ติดเชื้อจากการ${d.infected_type} (${d.infected_source}) เข้ารักษาที่ ${d.hospital} จังหวัด${d.hospital_province} เมื่อวันที่ ${text_from_date(d.confirmed_date)} สถานะปัจจุบันคือ ${d.status}`)
         ),
       update => update,
       exit => exit.remove()
     )
       .attr('class', 'cell')
-      .attr('width', cell_size - 1)
+      .attr('width', cell_size/width_factor - 1)
       .attr('height', cell_size - 1)
-      .attr('fill', d => color_scale(d.infected_type))
-      .on('mouseover', d => {
-        svg.selectAll('rect.cell')
-          .filter(dd => {
-            if (projections['default']) return dd.number === d.number;
-            if (projections['x']) return dd.date_string === d.date_string;
-            if (projections['y']) return dd.number === d.number;
-          })
-          .attr('fill', d => d3.rgb(color_scale(d.infected_type)).darker(2))
-      })
-      .on('mouseout', () => {
-        svg.selectAll('rect.cell')
-          .attr('fill', d => color_scale(d.infected_type));
-      })
+      .attr('fill', d => color_scale(d.status))
+      // .on('mouseover', d => {
+      //   svg.selectAll('rect.cell')
+      //     .filter(dd => {
+      //       if (projections['default']) return dd.number === d.number;
+      //       if (projections['x']) return dd.date_string === d.date_string;
+      //       if (projections['y']) return dd.number === d.number;
+      //     })
+      //     .attr('fill', d => d3.rgb(color_scale(d.infected_type)).darker(2))
+      // })
+      // .on('mouseout', () => {
+      //   svg.selectAll('rect.cell')
+      //     .attr('fill', d => color_scale(d.infected_type));
+      // })
     .transition(t)
       .delay((d, i) => i/5)
       .attr('x', d => projections.x ? x_scale(d.date_order) : date_scale(d.date))
@@ -86,7 +86,7 @@ let draw = () => {
         d3.axisTop(x_scale) :
         d3.axisTop(date_scale)
           .ticks(d3.timeWeek.every(1))
-          .tickFormat(date => `${date.getDate()} ${months[date.getMonth()]}`)
+          .tickFormat(text_from_date)
     );
   
   svg.selectAll('.label').remove();
@@ -95,32 +95,32 @@ let draw = () => {
       .attr('class', 'label')
       .attr('text-anchor', 'start')
       .attr('x', width)
-      .attr('dx', 15)
+      .attr('dx', 10)
       .attr('y', -19)
       .text('วัน');
+  } else {
+    svg.append('text')
+      .attr('class', 'label')
+      .attr('text-anchor', 'end')
+      .attr('x', 0)
+      .attr('dx', 5)
+      .attr('y', -19)
+      .text('วันที่');
   }
-  // } else {
-  //   svg.append('text')
-  //     .attr('class', 'label')
-  //     .attr('text-anchor', 'end')
-  //     .attr('x', 0)
-  //     .attr('dx', -10)
-  //     .attr('y', -19)
-  //     .text('พ.ศ.');
-  // }
 
   // Legend
   svg.append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${200},${height-100})`);
   svg.select(".legend")
     .classed("dark-background", projections['y'])
     .call(d3.legendColor()
-      .shapeWidth(cell_size-1)
-      .shapeHeight(cell_size-1)
+      .shapeWidth(cell_size/width_factor - 1)
+      .shapeHeight(cell_size - 1)
       .shapePadding(0)
       .scale(color_scale)
-    );
+    )
+    .transition(t)
+      .attr("transform", () => `translate(${projections.x ? 200 : 50},${height - (projections.y ? 300 : 100)})`);
 }
 
 const project_buttons = {
@@ -154,13 +154,14 @@ let date_from_text = (text) => {
     return Date.now();
   }
 }
+let text_from_date = date => `${date.getDate()} ${months[date.getMonth()]}`
 
 d3.csv('data.csv').then(data => {
   names = data;
   names_by_date = {};
   data.forEach((d, idx) => {
     let counter = 0;
-    for(let date = date_from_text(d.confirmed_date); date <= date_from_text(d.recover_date); date.setDate(date.getDate() + 1)) {
+    for(let date = date_from_text(d.confirmed_date); date <= date_from_text(d.discharged_date); date.setDate(date.getDate() + 1)) {
       let date_string = date.toString();
       if (!names_by_date[date_string]) {
         names_by_date[date_string] = [];
@@ -181,7 +182,7 @@ d3.csv('data.csv').then(data => {
         infected_source: d.infected_source,
         status: d.status,
         confirmed_date: date_from_text(d.confirmed_date),
-        recover_date: date_from_text(d.recover_date),
+        discharged_date: date_from_text(d.discharged_date),
         date: new Date(date),
         date_string: date_string,
         date_order: counter++,
@@ -193,7 +194,6 @@ d3.csv('data.csv').then(data => {
     }
     names[idx].years = (idx === 0) ? counter : (names[idx-1].years + counter);
   });
-  console.log(cells)
 
   svg.append('g')
     .attr("class", "x-axis")
