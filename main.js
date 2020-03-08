@@ -42,6 +42,7 @@ let draw = () => {
       exit => exit.remove()
     )
       .attr('class', 'patient')
+      .text(d => d.number)
       .attr('text-anchor', 'end')
       .attr('fill', d => color_scale(color_variable(d)))
       .attr('y', (d, i) => (i+1) * cell_size - 3)
