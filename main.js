@@ -16,7 +16,7 @@ const y_scale = d3.scaleLinear()
 const freq_scale = d3.scaleLinear()
   .domain([0, height/cell_size + 10])
   .range([0, height]);
-let color_scale = d3.scaleOrdinal(d3.schemeTableau10) //(["#1E1952", "#FCC20D", "#999999"])
+let color_scale = d3.scaleOrdinal(["#1E1952", "#FCC20D", "#49933E", "#65AAA3", "#EC7B23", "#D73F47", "#FC8896", "#9E648F", "#89624D"]) //(d3.schemeTableau10)
   .unknown("#999999")
 
 let color_variable_name = "gender";
