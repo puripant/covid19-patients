@@ -37,12 +37,12 @@ body {
   text-align: center;
   font-size: 11px;
   border: 1px solid #1E1952;
-  background-color: #FCC20D;
+  background-color: white;
   color: #1E1952;
 }
 .button.highlighted, .button:hover {
   background-color: #1E1952;
-  color: #FCC20D;
+  color: white;
   cursor: pointer;
 }
 .noselect {
@@ -54,10 +54,3 @@ body {
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
-
-/* .legendCells rect.swatch {
-  stroke: #1E1952;
-}
-.dark-background .legendCells text.label {
-  fill: #1E1952;
-} */

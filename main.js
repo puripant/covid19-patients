@@ -16,8 +16,7 @@ const y_scale = d3.scaleLinear()
 const freq_scale = d3.scaleLinear()
   .domain([0, height/cell_size + 10])
   .range([0, height]);
-const color_scale = d3.scaleOrdinal(["#1E1952", "#FCC20D", "#999999"]) //(d3.schemeTableau10)
-  // .domain([9, 10]);
+const color_scale = d3.scaleOrdinal(["#1E1952", "#FCC20D", "#999999"])
 
 const svg = d3.select('#chart')
   .append('svg')
@@ -198,9 +197,6 @@ d3.csv('data.csv').then(data => {
   svg.append('g')
     .attr("class", "x-axis")
     .attr("transform", "translate(0,-10)");
-  // svg.append("g")
-  //   .attr("class", "x axis")
-  //   .attr("transform", "translate(0,-10)");
 
   draw();
 });
