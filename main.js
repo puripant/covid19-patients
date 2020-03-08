@@ -1,5 +1,5 @@
-const width = (window.innerWidth > 500) ? 500 : 300;
-const height = 500;
+const width = (window.innerWidth > 500) ? 480 : 300;
+const height = 600;
 const margin = { left: 25, right: 25, top: 50, bottom: 10 };
 const cell_size = 10;
 const width_factor = (window.innerWidth > 500) ? 1 : 1.5;
@@ -16,7 +16,12 @@ const y_scale = d3.scaleLinear()
 const freq_scale = d3.scaleLinear()
   .domain([0, height/cell_size + 10])
   .range([0, height]);
-const color_scale = d3.scaleOrdinal(["#1E1952", "#FCC20D", "#999999"])
+let color_scale = d3.scaleOrdinal(d3.schemeTableau10) //(["#1E1952", "#FCC20D", "#999999"])
+  .unknown("#999999")
+
+let color_variable_name = "gender";
+color_scale.domain(["ชาย", "หญิง"]);
+const color_variable = d => d[color_variable_name];
 
 const svg = d3.select('#chart')
   .append('svg')
@@ -38,7 +43,7 @@ let draw = () => {
     )
       .attr('class', 'patient')
       .attr('text-anchor', 'end')
-      .attr('fill', d => color_scale(d.status))
+      .attr('fill', d => color_scale(color_variable(d)))
       .attr('y', (d, i) => (i+1) * cell_size - 3)
     .transition(t)
       .delay(d => d.years/5)
@@ -58,20 +63,20 @@ let draw = () => {
       .attr('class', 'cell')
       .attr('width', cell_size/width_factor - 1)
       .attr('height', cell_size - 1)
-      .attr('fill', d => color_scale(d.status))
-      // .on('mouseover', d => {
-      //   svg.selectAll('rect.cell')
-      //     .filter(dd => {
-      //       if (projections['default']) return dd.number === d.number;
-      //       if (projections['x']) return dd.date_string === d.date_string;
-      //       if (projections['y']) return dd.number === d.number;
-      //     })
-      //     .attr('fill', d => d3.rgb(color_scale(d.infected_type)).darker(2))
-      // })
-      // .on('mouseout', () => {
-      //   svg.selectAll('rect.cell')
-      //     .attr('fill', d => color_scale(d.infected_type));
-      // })
+      .attr('fill', d => color_scale(color_variable(d)))
+      .on('mouseover', d => {
+        svg.selectAll('rect.cell')
+          .filter(dd => {
+            if (projections['default']) return dd.number === d.number;
+            if (projections['x']) return dd.date_string === d.date_string;
+            if (projections['y']) return dd.number === d.number;
+          })
+          .attr('fill', d => d3.rgb(color_scale(color_variable(d))).darker(2))
+      })
+      .on('mouseout', () => {
+        svg.selectAll('rect.cell')
+          .attr('fill', d => color_scale(color_variable(d)));
+      })
     .transition(t)
       .delay((d, i) => i/5)
       .attr('x', d => projections.x ? x_scale(d.date_order) : date_scale(d.date))
@@ -119,7 +124,7 @@ let draw = () => {
       .scale(color_scale)
     )
     .transition(t)
-      .attr("transform", () => `translate(${projections.x ? 200 : 50},${height - (projections.y ? 300 : 100)})`);
+      .attr("transform", () => `translate(${projections.x ? 200 : 50},${height - (projections.y ? 400 : 200)})`);
 }
 
 const project_buttons = {
@@ -139,6 +144,31 @@ let project_along = axis => {
     
     draw();
   }
+}
+
+const color_buttons = [
+  d3.select('#color-button-0'),
+  d3.select('#color-button-1'),
+  d3.select('#color-button-2'),
+  d3.select('#color-button-3'),
+  d3.select('#color-button-4'),
+  d3.select('#color-button-5'),
+  d3.select('#color-button-6')
+];
+const variables = [
+  "gender", "nationality", "age_group", "occupation", "hospital_province", "infected_type", "status" 
+];
+let recolor = idx => {
+  for (let i in color_buttons) {
+    color_buttons[i].classed("highlighted", false);
+  }
+  color_buttons[idx].classed("highlighted", true);
+  
+  color_variable_name = variables[idx];
+  let domain = d3.set(names.map(color_variable)).values().filter(d => d != "");
+  domain.sort((a, b) => a.localeCompare(b))
+  color_scale.domain(domain);
+  draw();
 }
 
 const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.', 'ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
@@ -171,6 +201,7 @@ d3.csv('data.csv').then(data => {
         nationality: d.nationality,
         gender: d.gender,
         age: d.age,
+        age_group: d.age_group,
         occupation: d.occupation,
         origin: d.origin,
         confirmed_area: d.confirmed_area,
