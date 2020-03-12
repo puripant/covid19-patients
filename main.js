@@ -1,5 +1,5 @@
 const width = (window.innerWidth > 500) ? 480 : 300;
-const height = 600;
+const height = 700;
 const margin = { left: 25, right: 25, top: 50, bottom: 10 };
 const cell_size = 10;
 const width_factor = (window.innerWidth > 500) ? 1 : 1.5;
