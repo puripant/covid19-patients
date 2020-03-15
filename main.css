@@ -36,6 +36,7 @@ body {
 }
 .button {
   display: inline-block;
+  margin: 0.2em;
   padding: 0.5em;
   text-align: center;
   font-size: 11px;

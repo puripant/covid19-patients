@@ -16,7 +16,7 @@ const y_scale = d3.scaleLinear()
 const freq_scale = d3.scaleLinear()
   .domain([0, height/cell_size + 10])
   .range([0, height]);
-let color_scale = d3.scaleOrdinal(["#1E1952", "#FCC20D", "#49933E", "#65AAA3", "#EC7B23", "#D73F47", "#FC8896", "#9E648F", "#89624D"]) //(d3.schemeTableau10)
+let color_scale = d3.scaleOrdinal(d3.schemeTableau10) //(["#1E1952", "#FCC20D", "#49933E", "#65AAA3", "#EC7B23", "#D73F47", "#FC8896", "#9E648F", "#89624D"])
   .unknown("#999999")
 
 let color_variable_name = "gender";
@@ -56,7 +56,7 @@ let draw = () => {
     .join(
       enter => enter.append("rect")
         .call(enter => enter.append("svg:title")
-          .text(d => `เคสที่ ${d.number} คน${d.nationality} เพศ${d.gender} อายุ ${d.age} ปี อาชีพ${d.occupation} ติดเชื้อจากการ${d.infected_type} (${d.infected_source}) เข้ารักษาที่ ${d.hospital} จังหวัด${d.hospital_province} เมื่อวันที่ ${text_from_date(d.confirmed_date)} สถานะปัจจุบันคือ ${d.status}`)
+          .text(d => `ผู้ป่วยคนที่ ${d.number} คน${d.nationality} เพศ${d.gender} อายุ ${d.age} ปี อาชีพ${d.occupation} ติดเชื้อจากการ${d.infected_type} (${d.infected_source}) เข้ารักษาที่ ${d.hospital} จังหวัด${d.hospital_province} เมื่อวันที่ ${text_from_date(d.confirmed_date)} สถานะปัจจุบันคือ ${d.status}`)
         ),
       update => update,
       exit => exit.remove()
@@ -125,7 +125,7 @@ let draw = () => {
       .scale(color_scale)
     )
     .transition(t)
-      .attr("transform", () => `translate(${projections.x ? 300 : 50},400)`);
+      .attr("transform", () => `translate(${(projections.x ? 300 : 50) / width_factor},400)`);
 }
 
 const project_buttons = {
