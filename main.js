@@ -56,7 +56,7 @@ let draw = () => {
     .join(
       enter => enter.append("rect")
         .call(enter => enter.append("svg:title")
-          .text(d => `ผู้ป่วยคนที่ ${d.number} คน${d.nationality} เพศ${d.gender} อายุ ${d.age} ปี อาชีพ${d.occupation} ติดเชื้อจากการ${d.infected_type} (${d.infected_source}) เข้ารักษาที่ ${d.hospital} จังหวัด${d.hospital_province} เมื่อวันที่ ${text_from_date(d.confirmed_date)} สถานะปัจจุบันคือ ${d.status}`)
+          .text(d => `ผู้ป่วยรายที่ ${d.number} คน${d.nationality} เพศ${d.gender} อายุ ${d.age} ปี อาชีพ${d.occupation} ติดเชื้อจากการ${d.infected_type} (${d.infected_source}) เข้ารักษาที่ ${d.hospital} จังหวัด${d.hospital_province} เมื่อวันที่ ${text_from_date(d.confirmed_date)} สถานะปัจจุบันคือ ${d.status}`)
         ),
       update => update,
       exit => exit.remove()
