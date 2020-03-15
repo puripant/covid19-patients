@@ -1,5 +1,5 @@
 const width = (window.innerWidth > 500) ? 480 : 300;
-const height = 700;
+const height = 850;
 const margin = { left: 25, right: 25, top: 50, bottom: 10 };
 const cell_size = 10;
 const width_factor = (window.innerWidth > 500) ? 1 : 1.5;
@@ -125,7 +125,7 @@ let draw = () => {
       .scale(color_scale)
     )
     .transition(t)
-      .attr("transform", () => `translate(${projections.x ? 200 : 50},${height - (projections.y ? 400 : 200)})`);
+      .attr("transform", () => `translate(${projections.x ? 300 : 50},400)`);
 }
 
 const project_buttons = {
