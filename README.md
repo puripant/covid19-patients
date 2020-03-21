@@ -2,3 +2,4 @@
 
 Visualizing confirmed COVID-19 cases in Thailand with an animated timeline
 
+![Screenshot](thumbnail.png)

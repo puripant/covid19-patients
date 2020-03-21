@@ -147,6 +147,7 @@ let project_along = axis => {
   }
 }
 
+const data_filename = "data.csv";
 const color_buttons = [
   d3.select('#color-button-0'),
   d3.select('#color-button-1'),
@@ -156,6 +157,9 @@ const color_buttons = [
   d3.select('#color-button-5'),
   d3.select('#color-button-6')
 ];
+// const variables = [
+//   "sex", "nation", "age", "occ_new", "Province"
+// ];
 const variables = [
   "gender", "nationality", "age_group", "occupation", "hospital_province", "infected_type", "status" 
 ];
@@ -186,7 +190,7 @@ let date_from_text = (text) => {
 }
 let text_from_date = date => `${date.getDate()} ${months[date.getMonth()]}`
 
-d3.csv('data.csv').then(data => {
+d3.csv(data_filename).then(data => {
   names = data;
   names_by_date = {};
   data.forEach((d, idx) => {
