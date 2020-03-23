@@ -1,5 +1,5 @@
 const width = (window.innerWidth > 500) ? 480 : 300;
-const height = 850;
+const height = 5000;
 const margin = { left: 25, right: 25, top: 50, bottom: 10 };
 const cell_size = 10;
 const width_factor = (window.innerWidth > 500) ? 1 : 1.5;
@@ -14,9 +14,9 @@ const y_scale = d3.scaleLinear()
   .domain([0, height/cell_size])
   .range([0, height]);
 const freq_scale = d3.scaleLinear()
-  .domain([0, height/cell_size + 10])
+  .domain([0, height/cell_size + 100])
   .range([0, height]);
-let color_scale = d3.scaleOrdinal(d3.schemeTableau10) //(["#1E1952", "#FCC20D", "#49933E", "#65AAA3", "#EC7B23", "#D73F47", "#FC8896", "#9E648F", "#89624D"])
+let color_scale = d3.scaleOrdinal(d3.schemePaired) //(["#1E1952", "#FCC20D", "#49933E", "#65AAA3", "#EC7B23", "#D73F47", "#FC8896", "#9E648F", "#89624D"])
   .unknown("#999999")
 
 let color_variable_name = "gender";
